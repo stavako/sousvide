@@ -6,12 +6,29 @@
 
     <script>
       $(function() {
-        // handle click to set date
-        $('#time_button').on('click', function() {
-          $.get('http://192.168.1.10:8000/time', function(data) {
+        function updateTime() {
+          // equivalent to $.get('http://192.168.1.10:8000/time', ...
+          $.get('/time', function(data) {
             $('#time_field').text(data);
           });
-        });
+        }
+
+        var isTimerRunning = false;
+        var intervalId;
+        function toggleTimer() {
+          if (isTimerRunning) {
+            clearInterval(intervalId);
+            isTimerRunning = false;
+            $('#time_button').text("Start timer");
+          } else {
+            intervalId = setInterval(updateTime, 1000);
+            isTimerRunning = true;
+            $('#time_button').text("Stop timer");
+          }
+        }
+
+        // on click, send GET to http://.../time
+        $('#time_button').on('click', toggleTimer);
 
       });
     </script>
